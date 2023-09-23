@@ -13,14 +13,18 @@ import s from './About.module.scss';
 
 type Props = { apiConfig: ClashAPIConfig };
 
-function Version({ name, link, version }: { name: string; link: string; version: string }) {
+function Version({ name, link, version }: { name: string; link: string; version?: string }) {
   return (
     <div className={s.root}>
       <h2>{name}</h2>
-      <p>
-        <span>Version </span>
-        <span className={s.mono}>{version}</span>
-      </p>
+      {version ? (
+        <p>
+          <span>Version </span>
+          <span className={s.mono}>{version}</span>
+        </p>
+      ) : (
+        <></>
+      )}
       <p>
         <a className={s.link} href={link} target="_blank" rel="noopener noreferrer">
           <GitHub size={20} />
@@ -35,13 +39,14 @@ function AboutImpl(props: Props) {
   const { data: version } = useQuery(['/version', props.apiConfig], () =>
     fetchVersion('/version', props.apiConfig),
   );
+
+  const sVer = __VERSION__ + '-single-node';
   return (
     <>
       <ContentHeader title="About" />
-      {version && version.version ? (
-        <Version name="Clash" version={version.version} link="https://github.com/Dreamacro/clash" />
-      ) : null}
+      <Version name="Clash" version={version?.version} link="https://github.com/Dreamacro/clash" />
       <Version name="Yacd" version={__VERSION__} link="https://github.com/haishanh/yacd" />
+      <Version name="Yacd(single_node)" version={sVer} link="https://github.com/hxnas/yacd" />
     </>
   );
 }
