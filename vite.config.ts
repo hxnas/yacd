@@ -1,7 +1,6 @@
-import react from '@vitejs/plugin-react'
+import react from '@vitejs/plugin-react';
 import * as path from 'path';
 import { defineConfig } from 'vite';
-import { VitePWA } from 'vite-plugin-pwa';
 
 import * as pkg from './package.json';
 
@@ -12,7 +11,7 @@ export default defineConfig(async ({ mode }) => {
     try {
       hash = await gitHash();
       hash = hash.trim();
-    } catch (e) { }
+    } catch (e) {}
   }
   if (!hash) hash = '';
   console.log('commit hash', hash);
@@ -38,18 +37,20 @@ export default defineConfig(async ({ mode }) => {
       // which make more sense
       // but change this may break other people's tools
       outDir: 'public',
+      cssCodeSplit: false,
+      assetsInlineLimit: 1024 * 200,
+      chunkSizeWarningLimit: 1024 * 1024 * 2,
+      rollupOptions: {
+        output: {
+          entryFileNames: 'yacd-[hash].js',
+          chunkFileNames: 'yacd-[name]-[hash].js',
+          assetFileNames: 'yacd-[name]-[hash].[ext]',
+          manualChunks: () => '',
+        },
+      },
     },
-    plugins: [
-      react(),
-      VitePWA({
-        srcDir: 'src',
-        outDir: 'public',
-        filename: 'sw.ts',
-        strategies: 'injectManifest',
-        base: './',
-      }),
-    ],
-  }
+    plugins: [react()],
+  };
 });
 
 // non vite stuff
@@ -63,7 +64,11 @@ async function gitHash() {
   }
 }
 
-function run(spawn: typeof import('node:child_process').spawn, cmd0: string, args0: string[]): Promise<string> {
+function run(
+  spawn: typeof import('node:child_process').spawn,
+  cmd0: string,
+  args0: string[],
+): Promise<string> {
   const cmd = cmd0;
   const args = args0;
 

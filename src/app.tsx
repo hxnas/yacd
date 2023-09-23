@@ -13,7 +13,6 @@ import { createRoot } from 'react-dom/client';
 import Modal from 'react-modal';
 
 import Root from './components/Root';
-import * as swRegistration from './swRegistration';
 
 init();
 
@@ -55,8 +54,6 @@ setTimeout(() => {
       /* noop */
     });
 }, 1);
-
-swRegistration.register();
 
 // eslint-disable-next-line no-console
 console.log('Checkout the repo: https://github.com/haishanh/yacd');

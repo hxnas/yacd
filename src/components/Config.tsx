@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { LogOut } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 import * as logsApi from 'src/api/logs';
 import Select from 'src/components/shared/Select';
@@ -8,8 +7,6 @@ import { ClashAPIConfig } from 'src/types';
 
 import { getClashAPIConfig, getLatencyTestUrl, getSelectedChartStyleIndex } from '../store/app';
 import { fetchConfigs, getConfigs, updateConfigs } from '../store/configs';
-import { openModal } from '../store/modals';
-import Button from './Button';
 import s0 from './Config.module.scss';
 import ContentHeader from './ContentHeader';
 import Input, { SelfControlledInput } from './Input';
@@ -23,7 +20,7 @@ const { useEffect, useState, useCallback, useRef, useMemo } = React;
 
 const propsList = [{ id: 0 }, { id: 1 }, { id: 2 }, { id: 3 }];
 
-const logLeveOptions = [
+const logLevelOptions = [
   ['debug', 'Debug'],
   ['info', 'Info'],
   ['warning', 'Warning'],
@@ -31,22 +28,9 @@ const logLeveOptions = [
   ['silent', 'Silent'],
 ];
 
-const portFields = [
-  { key: 'port', label: 'HTTP Proxy Port' },
-  { key: 'socks-port', label: 'SOCKS5 Proxy Port' },
-  { key: 'mixed-port', label: 'Mixed Port' },
-  { key: 'redir-port', label: 'Redir Port' },
-];
-
 const langOptions = [
   ['zh', '中文'],
   ['en', 'English'],
-];
-
-const modeOptions = [
-  ['Global', 'Global'],
-  ['Rule', 'Rule'],
-  ['Direct', 'Direct'],
 ];
 
 const mapState = (s: State) => ({
@@ -101,10 +85,6 @@ function ConfigImpl({
     }
     refConfigs.current = configs;
   }, [configs]);
-
-  const openAPIConfigModal = useCallback(() => {
-    dispatch(openModal('apiConfig'));
-  }, [dispatch]);
 
   const setConfigState = useCallback(
     (name: keyof ClashGeneralConfig, val: ClashGeneralConfig[keyof ClashGeneralConfig]) => {
@@ -190,6 +170,19 @@ function ConfigImpl({
 
   const { t, i18n } = useTranslation();
 
+  const modeOptions = [
+    ['Global', t('proxy_mode_global')],
+    ['Rule', t('proxy_mode_rule')],
+    ['Direct', t('proxy_mode_direct')],
+  ];
+
+  const portFields = [
+    { key: 'port', label: t('http_proxy_port') },
+    { key: 'socks-port', label: t('socks5_proxy_port') },
+    { key: 'mixed-port', label: t('mixed_proxy_port') },
+    { key: 'redir-port', label: t('redir_proxy_port') },
+  ];
+
   return (
     <div>
       <ContentHeader title={t('Config')} />
@@ -209,7 +202,7 @@ function ConfigImpl({
         )}
 
         <div>
-          <div className={s0.label}>Mode</div>
+          <div className={s0.label}>{t('proxy_mode')}</div>
           <Select
             options={modeOptions}
             selected={mode}
@@ -218,16 +211,16 @@ function ConfigImpl({
         </div>
 
         <div>
-          <div className={s0.label}>Log Level</div>
+          <div className={s0.label}>{t('log_level')}</div>
           <Select
-            options={logLeveOptions}
+            options={logLevelOptions}
             selected={configState['log-level']}
             onChange={(e) => handleChangeValue({ name: 'log-level', value: e.target.value })}
           />
         </div>
 
         <div>
-          <div className={s0.label}>Allow LAN</div>
+          <div className={s0.label}>{t('allow_lan')}</div>
           <div className={s0.wrapSwitch}>
             <Switch
               name="allow-lan"
@@ -263,7 +256,7 @@ function ConfigImpl({
           </div>
         </div>
 
-        <div>
+        <div style={{ gridColumnStart: 1, gridColumnEnd: 3 }}>
           <div className={s0.label}>{t('chart_style')}</div>
           <Selection2
             OptionComponent={TrafficChartSample}
@@ -273,18 +266,7 @@ function ConfigImpl({
           />
         </div>
 
-        <div>
-          <div className={s0.label}>
-            {t('current_backend')}
-            <p>{apiConfig.baseURL}</p>
-          </div>
-          <div className={s0.label}>Action</div>
-          <Button
-            start={<LogOut size={16} />}
-            label={t('switch_backend')}
-            onClick={openAPIConfigModal}
-          />
-        </div>
+        <div></div>
       </div>
     </div>
   );

@@ -50,6 +50,20 @@ export function addClashAPIConfig(conf: ClashAPIConfig) {
   };
 }
 
+export function setClashSecret(secret: string) {
+  return async (dispatch: DispatchFn, getState: GetStateFn) => {
+    const clashAPIConfig = { secret, baseURL: window.location.origin, addedAt: Date.now() };
+    dispatch('setClashSecret', (s) => {
+      s.app.clashAPIConfigs = [clashAPIConfig];
+      s.app.selectedClashAPIConfigIndex = 0;
+    });
+    saveState(getState().app);
+    try {
+      window.location.reload();
+    } catch (err) {}
+  };
+}
+
 export function removeClashAPIConfig(conf: ClashAPIConfig) {
   return async (dispatch: DispatchFn, getState: GetStateFn) => {
     const idx = findClashAPIConfigIndex(getState, conf);
@@ -200,7 +214,7 @@ export function updateCollapsibleIsOpen(prefix: string, name: string, v: boolean
 }
 
 const defaultClashAPIConfig = {
-  baseURL: document.getElementById('app')?.getAttribute('data-base-url') ?? 'http://127.0.0.1:9090',
+  baseURL: window.location.origin,
   secret: '',
   addedAt: 0,
 };

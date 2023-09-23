@@ -54,7 +54,7 @@ function Settings({ appConfig }: { appConfig: StateApp }) {
       </div>
       <hr />
       <div className={s.labeledInput}>
-        <span>{t('hide_unavail_proxies')}</span>
+        <span>{t('hide_unavailable_proxies')}</span>
         <div>
           <Switch
             name="hideUnavailableProxies"
